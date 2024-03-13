@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "627447759299",
+    "firebase_url": "https://quizzymind-2cdf8-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "quizzymind-2cdf8",
+    "storage_bucket": "quizzymind-2cdf8.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:627447759299:android:98a6015eff2035a9fcbd76",
+        "android_client_info": {
+          "package_name": "com.example.quizzymind"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCRtE1wzzZrtu3IVc0VlPf5ckS-2QiX4Ho"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
