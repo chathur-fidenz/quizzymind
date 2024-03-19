@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:quizzymind/utils/html_entity_decoder.dart';
 import 'package:quizzymind/widgets/answer_button.dart';
 import 'package:quizzymind/models/question_model.dart';
 
@@ -42,7 +43,7 @@ class _QuestionScreenState extends State<QuestionScreen> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Text(
-              currentQuestion.question,
+              HtmlEntityDecoder.decodeHtmlEntities(currentQuestion.question),
               style: GoogleFonts.lato(
                 color: const Color.fromARGB(255, 201, 153, 251),
                 fontSize: 24,
@@ -53,7 +54,7 @@ class _QuestionScreenState extends State<QuestionScreen> {
             const SizedBox(height: 30),
             ...currentQuestion.answers.map((answer) {
               return AnswerButton(
-                answerText: answer,
+                answerText: HtmlEntityDecoder.decodeHtmlEntities(answer),
                 onTap: () {
                   answerQuestion(answer);
                 },
