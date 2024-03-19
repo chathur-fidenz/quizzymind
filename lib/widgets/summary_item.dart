@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:quizzymind/utils/html_entity_decoder.dart';
 
 import 'package:quizzymind/widgets/question_identifier.dart';
 
@@ -30,7 +31,8 @@ class SummaryItem extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  itemData['question'] as String,
+                  HtmlEntityDecoder.decodeHtmlEntities(
+                      itemData['question'] as String),
                   style: GoogleFonts.lato(
                     color: Colors.white,
                     fontSize: 16,
@@ -40,11 +42,15 @@ class SummaryItem extends StatelessWidget {
                 const SizedBox(
                   height: 5,
                 ),
-                Text(itemData['user_answer'] as String,
+                Text(
+                    HtmlEntityDecoder.decodeHtmlEntities(
+                        itemData['user_answer'] as String),
                     style: const TextStyle(
                       color: Color.fromARGB(255, 202, 171, 252),
                     )),
-                Text(itemData['correct_answer'] as String,
+                Text(
+                    HtmlEntityDecoder.decodeHtmlEntities(
+                        itemData['correct_answer'] as String),
                     style: const TextStyle(
                       color: Color.fromARGB(255, 181, 254, 246),
                     )),

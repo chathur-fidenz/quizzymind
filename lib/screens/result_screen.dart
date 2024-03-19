@@ -1,10 +1,11 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-//import 'package:quizzymind/data/questions.dart';
 import 'package:quizzymind/models/question_model.dart';
 import 'package:quizzymind/widgets/question_summary.dart';
 
-class ResultScreen extends StatelessWidget {
+class ResultScreen extends StatefulWidget {
   const ResultScreen({
     super.key,
     required this.chosenAnswers,
@@ -16,16 +17,23 @@ class ResultScreen extends StatelessWidget {
   final List<String> chosenAnswers;
   final List<Question> questions;
 
+  @override
+  State<ResultScreen> createState() => _ResultScreenState();
+}
+
+class _ResultScreenState extends State<ResultScreen> {
+  bool _isYetToSave = true;
+
   List<Map<String, Object>> getSummaryData() {
     final List<Map<String, Object>> summary = [];
 
-    for (var i = 0; i < chosenAnswers.length; i++) {
+    for (var i = 0; i < widget.chosenAnswers.length; i++) {
       summary.add(
         {
           'question_index': i,
-          'question': questions[i].question,
-          'correct_answer': questions[i].correctAnswer,
-          'user_answer': chosenAnswers[i]
+          'question': widget.questions[i].question,
+          'correct_answer': widget.questions[i].correctAnswer,
+          'user_answer': widget.chosenAnswers[i]
         },
       );
     }
@@ -33,10 +41,39 @@ class ResultScreen extends StatelessWidget {
     return summary;
   }
 
+  void saveResult() async {
+    final authenticatedUser = FirebaseAuth.instance.currentUser!;
+
+    final summaryData = getSummaryData();
+    final totalQuestions = widget.questions.length;
+    final correctAnswers = summaryData.where((data) {
+      return data['user_answer'] == data['correct_answer'];
+    }).length;
+
+    FirebaseFirestore.instance.collection('quiz_results').add({
+      'user_id': authenticatedUser.uid,
+      'total_questions': totalQuestions,
+      'correct_answers': correctAnswers,
+      'incorrect_answers': totalQuestions - correctAnswers,
+      'created_at': Timestamp.now(),
+    });
+
+    Future.delayed(const Duration(seconds: 2), () {
+      setState(() {
+        _isYetToSave = false;
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Result saved.'),
+        ),
+      );
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final summaryData = getSummaryData();
-    final numTotalQuestions = questions.length;
+    final numTotalQuestions = widget.questions.length;
     final numCorrectQuestions = summaryData.where((data) {
       return data['user_answer'] == data['correct_answer'];
     }).length;
@@ -65,13 +102,22 @@ class ResultScreen extends StatelessWidget {
               height: 30,
             ),
             TextButton.icon(
-              onPressed: onRestart,
+              onPressed: widget.onRestart,
               style: TextButton.styleFrom(
                 foregroundColor: Colors.white,
               ),
               icon: const Icon(Icons.refresh),
               label: const Text('Restart Quiz!'),
-            )
+            ),
+            if (_isYetToSave)
+              TextButton.icon(
+                onPressed: saveResult,
+                style: TextButton.styleFrom(
+                  foregroundColor: Colors.white,
+                ),
+                icon: const Icon(Icons.save),
+                label: const Text('Save result'),
+              )
           ],
         ),
       ),
