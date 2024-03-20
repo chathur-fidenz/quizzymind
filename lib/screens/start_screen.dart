@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:quizzymind/screens/quiz_results_screen.dart';
 
 class StartScreen extends StatefulWidget {
   const StartScreen(this.startQuiz, {super.key});
@@ -67,7 +68,13 @@ class _StartScreenState extends State<StartScreen> {
                   label: const Text('Start Quiz'),
                 ),
                 OutlinedButton.icon(
-                  onPressed: widget.startQuiz,
+                  onPressed: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (ctx) => const QuizResults(),
+                      ),
+                    );
+                  },
                   style: OutlinedButton.styleFrom(
                     foregroundColor: Colors.white,
                   ),
