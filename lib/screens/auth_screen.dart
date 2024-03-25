@@ -29,7 +29,13 @@ class _AuthScreenState extends State<AuthScreen> {
     final isValid = _form.currentState!.validate();
 
     if (!isValid || !_isLogin && _selectedImage == null) {
-      // show error message ...
+      if (_selectedImage == null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Please select an image.'),
+          ),
+        );
+      }
       return;
     }
 
@@ -40,7 +46,7 @@ class _AuthScreenState extends State<AuthScreen> {
         _isAuthenticating = true;
       });
       if (_isLogin) {
-        final userCredentials = await _firebase.signInWithEmailAndPassword(
+        await _firebase.signInWithEmailAndPassword(
             email: _enteredEmail, password: _enteredPassword);
       } else {
         final userCredentials = await _firebase.createUserWithEmailAndPassword(
@@ -145,6 +151,7 @@ class _AuthScreenState extends State<AuthScreen> {
                                     value.trim().length < 4) {
                                   return 'Please enter at least 4 characters.';
                                 }
+                                return null;
                               },
                               onSaved: (value) {
                                 _enteredUsername = value!;
